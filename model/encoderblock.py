@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from . import EncoderLayer
+from encoderlayer import EncoderLayer
 
 
 class EncoderBlock(nn.Module):

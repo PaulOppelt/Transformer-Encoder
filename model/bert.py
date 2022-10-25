@@ -3,8 +3,8 @@ import torch.nn as nn
 
 from torch import Tensor
 
-from . import EncoderBlock
-from . import EmbeddingLayer
+from encoderblock import EncoderBlock
+from embedding import EmbeddingLayer
 
 from typing import Optional
 

@@ -62,6 +62,9 @@ class EmbeddingLayer(nn.Module):
         )
 
     def forward(self, x, segment=None, strand=None):
+        if segment == None and strand == None:
+            segment = torch.zeros(x.shape).to(torch.long)
+            strand = torch.zeros(x.shape).to(torch.long)
         return (
             self.TokenEmbedding(x)
             + self.SegmentEmbedding(segment)
