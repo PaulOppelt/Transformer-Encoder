@@ -44,6 +44,7 @@ class Bert(nn.Module):
         PAD_IDX: int = 1,
         dropout: float = 0.1,
         copy_weight: bool = False,
+        **kwargs
     ):
 
         super(Bert, self).__init__()
@@ -66,7 +67,7 @@ class Bert(nn.Module):
             scale_grad_by_freq=True,
         )
 
-        self.positional_encoding = PositionalEncoding(d_model=d_model, dropout=dropout)
+        self.Positional_encoding = PositionalEncoding(d_model=d_model, dropout=dropout)
 
         # define output layers.
         self.lc = nn.Linear(d_model, d_model)
@@ -98,7 +99,7 @@ class Bert(nn.Module):
                 
         """
         src = self.Embedding(src, segments, strain)
-        src = self.positional_encoding(src)
+        src = self.Positional_encoding(src)
         src = self.Block(src)
         logits_te = self.norm(self.activation(self.lc(src)))
         logits_te = self.out(logits_te)
