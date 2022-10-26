@@ -5,6 +5,10 @@ from .encoderlayer import EncoderLayer
 
 
 class EncoderBlock(nn.Module):
+    r"""class that stacks several Encoder layers.
+    Args:
+        n_layers: number of Encoder Layers
+    """
     def __init__(self, d_model, nhead, d_hidden, n_layers, dropout):
 
         super(EncoderBlock, self).__init__()
@@ -27,10 +31,6 @@ class EncoderBlock(nn.Module):
         )
 
     def forward(self, x):
-        r"""
-        pass the input through n_layers of multihead Attention with subsequent
-        positionwise feedforward
-        """
         for layer in self.Encoder_Layers:
             x = layer(x)
 

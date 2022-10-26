@@ -6,6 +6,11 @@ import math
 
 
 class PositionalEncoding(nn.Module):
+    r"""Encodes the input of a sequence such, that the model can learn recognize relative position
+    in the input. Otherwise the input is incariant to positional permutation.
+    Args:
+        d_model: embedding dimension of the input tokens
+    """
     def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
 
         super(PositionalEncoding, self).__init__()

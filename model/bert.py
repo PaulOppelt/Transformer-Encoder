@@ -10,6 +10,16 @@ from typing import Optional
 
 
 class Bert(nn.Module):
+    r"""Implement Bert Network that can be pretrained on a reconstruction task and finetuned with labeled data
+    Args: 
+        d_model: embedding dimension of the input tokens
+        n_segments: embeddings for segments in the input: e.g Sentences.
+        vocab_size: number of tokens in the feature space
+        n_layers: number of self-attention layers
+        nheads: nuber of self-attention heads in the layers
+        PAD_IDX: index in vocabulary to be a padding index. gradients w.r.t the pad-index are ignored. 
+        copy_weight: bool, embedding weight is the same as the output weight of the reconstruction layer. 
+    """
     def __init__(
         self,
         d_model: int = 512,
@@ -25,6 +35,7 @@ class Bert(nn.Module):
 
         super(Bert, self).__init__()
 
+        # initialize EncoderBlock with init-parameters
         self.Block = EncoderBlock(
             d_model=d_model,
             nhead=nhead,
@@ -33,6 +44,7 @@ class Bert(nn.Module):
             dropout=dropout,
         )
 
+        # initialize Embedding layeres
         self.Embedding = EmbeddingLayer(
             n_segment=n_segments,
             vocab_size=vocab_size,
@@ -41,6 +53,7 @@ class Bert(nn.Module):
             scale_grad_by_freq=True,
         )
 
+        # define output layers.
         self.lc = nn.Linear(d_model, d_model)
         self.norm = nn.LayerNorm(d_model)
         self.activation = nn.GELU()
@@ -56,6 +69,19 @@ class Bert(nn.Module):
         segments: Optional[None] = None,
         strain: Optional[None] = None,
     ) -> Tensor:
+        r"""
+        Args: 
+            src: Tensor, shape: batch, sequence_lenght
+
+        out: 
+            src: ouput of the Transformer, can be passed to linear-classification
+                layer in order to predict labeled data in a finetuning step
+                    shape: batch, sequence_lenght, d_model
+            logits_te: reconstruction of the input. Still needs to be passed to a loss-function to predict
+                most likely reconstruction. 
+                    shape: batch, sequence_lenght, vocab_size
+                
+        """
         src = self.Embedding(src, segments, strain)
         src = self.Block(src)
         logits_te = self.norm(self.activation(self.lc(src)))
