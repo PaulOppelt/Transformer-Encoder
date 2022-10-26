@@ -5,9 +5,22 @@ from torch import Tensor
 
 from .encoderblock import EncoderBlock
 from .embedding import EmbeddingLayer
+from .modules import PositionalEncoding
 
 from typing import Optional
 
+"""     vocab_size: int,
+        n_domains_incl: int = 4,
+        window_size: int = 32,
+        d_model: int = 512,
+        n_layers: int = 12,
+        n_heads: int = 16,
+        feed_foreward: int = 1024,
+        padding_idx: int = 1,
+        dropout: float = 0.4,
+        scale_grad_by_freq: bool = True,
+        #batch_first: bool = False,
+        copy_weight: bool = True"""
 
 class Bert(nn.Module):
     r"""Implement Bert Network that can be pretrained on a reconstruction task and finetuned with labeled data
@@ -53,6 +66,8 @@ class Bert(nn.Module):
             scale_grad_by_freq=True,
         )
 
+        self.positional_encoding = PositionalEncoding(d_model=d_model, dropout=dropout)
+
         # define output layers.
         self.lc = nn.Linear(d_model, d_model)
         self.norm = nn.LayerNorm(d_model)
@@ -83,6 +98,7 @@ class Bert(nn.Module):
                 
         """
         src = self.Embedding(src, segments, strain)
+        src = self.positional_encoding(src)
         src = self.Block(src)
         logits_te = self.norm(self.activation(self.lc(src)))
         logits_te = self.out(logits_te)

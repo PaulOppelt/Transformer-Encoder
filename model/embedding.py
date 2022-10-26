@@ -27,7 +27,7 @@ class EmbeddingLayer(nn.Module):
         self.TokenEmbedding = nn.Embedding(
             num_embeddings=vocab_size,
             embedding_dim=d_model,
-            padding_idx=None,
+            padding_idx=padding_idx,
             max_norm=None,
             norm_type=2.0,
             scale_grad_by_freq=False,
