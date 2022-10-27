@@ -17,6 +17,7 @@ class EncoderBlock(nn.Module):
         self.nhead = nhead
         self.d_hidden = d_hidden
         self.dropout = dropout
+        self.n_layers = n_layers
 
         self.Encoder_Layers = nn.ModuleList(
             [
@@ -26,7 +27,7 @@ class EncoderBlock(nn.Module):
                     d_hidden=self.d_hidden,
                     dropout=self.dropout,
                 )
-                for _ in range(n_layers)
+                for _ in range(self.n_layers)
             ]
         )
 

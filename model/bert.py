@@ -67,6 +67,7 @@ class Bert(nn.Module):
             scale_grad_by_freq=True,
         )
 
+        # initialize positional encoding to the input tokens.
         self.Positional_encoding = PositionalEncoding(d_model=d_model, dropout=dropout)
 
         # define output layers.
@@ -75,6 +76,7 @@ class Bert(nn.Module):
         self.activation = nn.GELU()
         self.out = nn.Linear(d_model, vocab_size)
 
+        # copy the token-embedding weight to the output layer
         if copy_weight == True:
             weights = self.Embedding.weight
             self.out.weight = weights
@@ -103,5 +105,4 @@ class Bert(nn.Module):
         src = self.Block(src)
         logits_te = self.norm(self.activation(self.lc(src)))
         logits_te = self.out(logits_te)
-        logits_te = torch.permute(logits_te, (0, 2, 1))
-        return logits_te, src
+        return logits_te, src 
