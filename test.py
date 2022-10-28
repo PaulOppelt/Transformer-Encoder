@@ -22,7 +22,7 @@ def get_n_params(model):
 if __name__ == "__main__": 
     # test positional encoding:
     pos = PositionalEncoding(d_model=512, dropout=0.1)
-    print(pos(torch.zeros(32,2,512)))
+    print(pos(torch.ones(32,2,512)))
 
     # test Encoder
     Encoder = Bert(

@@ -31,7 +31,7 @@ class PositionalEncoding(nn.Module):
 		Args:
 			x: Tensor, shape [batch_size,seq_len, d_model]
 		"""
-        return x + self.dropout(self.pe[:x.size(1), :x.size(2)])
+        return self.dropout(x + self.pe[:x.size(1), :x.size(2)])
 
 
 class PositionwiseFeedForward(nn.Module):
