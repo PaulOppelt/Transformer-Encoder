@@ -9,18 +9,6 @@ from .modules import PositionalEncoding
 
 from typing import Optional
 
-"""     vocab_size: int,
-        n_domains_incl: int = 4,
-        window_size: int = 32,
-        d_model: int = 512,
-        n_layers: int = 12,
-        n_heads: int = 16,
-        feed_foreward: int = 1024,
-        padding_idx: int = 1,
-        dropout: float = 0.4,
-        scale_grad_by_freq: bool = True,
-        #batch_first: bool = False,
-        copy_weight: bool = True"""
 
 class Bert(nn.Module):
     r"""Implement Bert Network that can be pretrained on a reconstruction task and finetuned with labeled data
@@ -35,14 +23,16 @@ class Bert(nn.Module):
     """
     def __init__(
         self,
-        d_model: int = 512,
-        n_segments: int = 32,
         vocab_size: int = 100,
+        n_domains_incl: int = 4, # not used 
+        window_size: int = 32,
+        d_model: int = 512,
         n_layers: int = 12,
-        nhead: int = 8,
-        d_hidden: int = 1024,
+        n_heads: int = 8,
+        feed_foreward: int = 1024,
         PAD_IDX: int = 1,
-        dropout: float = 0.1,
+        dropout: float = 0.4,
+        scale_grad_by_freq: bool = True,
         copy_weight: bool = False,
         **kwargs
     ):
@@ -52,19 +42,19 @@ class Bert(nn.Module):
         # initialize EncoderBlock with init-parameters
         self.Block = EncoderBlock(
             d_model=d_model,
-            nhead=nhead,
-            d_hidden=d_hidden,
+            nhead=n_heads,
+            d_hidden=feed_foreward,
             n_layers=n_layers,
             dropout=dropout,
         )
 
         # initialize Embedding layeres
         self.Embedding = EmbeddingLayer(
-            n_segment=n_segments,
+            window_size=window_size,
             vocab_size=vocab_size,
             d_model=d_model,
             padding_idx=PAD_IDX,
-            scale_grad_by_freq=True,
+            scale_grad_by_freq=scale_grad_by_freq
         )
 
         # initialize positional encoding to the input tokens.

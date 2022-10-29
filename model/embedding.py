@@ -5,7 +5,7 @@ import torch.nn as nn
 class EmbeddingLayer(nn.Module):
     def __init__(
         self,
-        n_segment: int,
+        window_size: int,
         vocab_size: int,
         d_model: int,
         padding_idx: int,
@@ -37,7 +37,7 @@ class EmbeddingLayer(nn.Module):
             dtype=None,
         )
         self.SegmentEmbedding = nn.Embedding(
-            num_embeddings=n_segment,
+            num_embeddings=window_size,
             embedding_dim=d_model,
             padding_idx=None,
             max_norm=None,
@@ -62,8 +62,9 @@ class EmbeddingLayer(nn.Module):
         )
 
     def forward(self, x, segment=None, strand=None):
-        if segment == None and strand == None:
+        if segment == None:
             segment = torch.zeros(x.shape).to(torch.long)
+        if strand == None:
             strand = torch.zeros(x.shape).to(torch.long)
         return (
             self.TokenEmbedding(x)

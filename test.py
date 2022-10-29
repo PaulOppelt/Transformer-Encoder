@@ -19,6 +19,16 @@ def get_n_params(model):
         pp += nn
     return pp
 
+
+def segment_gen(n_segment: int, n_domains_incl: int, batch_size: int) -> Tensor:
+    segments = torch.arange(n_segment)
+    segments = segments.repeat(n_domains_incl)
+    segments = segments.view(n_domains_incl, n_segment).T
+    segments = segments.reshape(-1).repeat(batch_size)
+    segments = segments.view(-1, n_segment * n_domains_incl)
+    return segments
+
+
 if __name__ == "__main__": 
     # test positional encoding:
     pos = PositionalEncoding(d_model=512, dropout=0.1)
@@ -30,14 +40,17 @@ if __name__ == "__main__":
         n_segments = 32,
         vocab_size = 100,
         n_layers = 12,
-        nhead = 8,
-        d_hidden = 1024,
+        n_heads = 8,
+        feed_foreward = 1024,
         PAD_IDX = 1,
         dropout = 0.1,
         copy_weight = False)
 
     print("number of parameters=",get_n_params(Encoder))
 
+    input = torch.randint(0,100,(256,32)).to(torch.long)
+    segments = segment_gen(8,4,256)
+
     start = time.time()
-    print(Encoder(torch.randint(0,100,(256,32)).to(torch.long)))
+    print(Encoder(input, segments))
     print(time.time()-start)
