@@ -34,17 +34,21 @@ if __name__ == "__main__":
     pos = PositionalEncoding(d_model=512, dropout=0.1)
     print(pos(torch.ones(32,2,512)))
 
+
+
     # test Encoder
     Encoder = Bert(
-        d_model = 512,
-        n_segments = 32,
         vocab_size = 100,
+        n_domains_incl = 4,
+        window_size = 32,
+        d_model = 512,
         n_layers = 12,
         n_heads = 8,
         feed_foreward = 1024,
         PAD_IDX = 1,
-        dropout = 0.1,
-        copy_weight = False)
+        dropout = 0.4,
+        scale_grad_by_freq = True,
+        copy_weight =  False)
 
     print("number of parameters=",get_n_params(Encoder))
 
