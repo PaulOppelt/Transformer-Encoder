@@ -28,7 +28,7 @@ class Bert(nn.Module):
         window_size: int = 32,
         d_model: int = 512,
         n_layers: int = 12,
-        n_heads: int = 8,
+        n_heads: int = 16,
         feed_foreward: int = 1024,
         PAD_IDX: int = 1,
         dropout: float = 0.4,
@@ -94,5 +94,5 @@ class Bert(nn.Module):
         src = self.Positional_encoding(src)
         src = self.Block(src)
         logits_te = self.norm(self.activation(self.lc(src)))
-        logits_te = self.out(logits_te)
+        logits_te = self.out(logits_te) # depending on the loss function perform permutation -> batch, vocab, seq_lenght
         return logits_te, src 

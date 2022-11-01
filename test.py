@@ -34,8 +34,6 @@ if __name__ == "__main__":
     pos = PositionalEncoding(d_model=512, dropout=0.1)
     print(pos(torch.ones(32,2,512)))
 
-
-
     # test Encoder
     Encoder = Bert(
         vocab_size = 100,

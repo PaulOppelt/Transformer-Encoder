@@ -61,9 +61,10 @@ class EmbeddingLayer(nn.Module):
             dtype=None,
         )
 
+
     def forward(self, x, segment=None, strand=None):
         if segment == None:
-            segment = torch.zeros(x.shape).to(torch.long)
+            segment = torch.zeros(x.shape).to(torch.long) # put on the correct device ...
         if strand == None:
             strand = torch.zeros(x.shape).to(torch.long)
         return (

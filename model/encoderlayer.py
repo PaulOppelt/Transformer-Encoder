@@ -43,7 +43,9 @@ class EncoderLayer(nn.Module):
              shape: conserved
         """
         attention = self.MultiHeadAttention(x)
-        out = self.dropout(self.norm_attention(attention + x))
+        attention = self.dropout(attention)
+        out = self.norm_attention(attention + x)
         feed_forward = self.PosWiseFeedForeward(out)
-        out = self.dropout(self.norm_pos(feed_forward + out))
+        feed_forward = self.dropout(feed_forward)
+        out = self.norm_pos(feed_forward + out)
         return out
