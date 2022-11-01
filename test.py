@@ -30,9 +30,10 @@ def segment_gen(n_segment: int, n_domains_incl: int, batch_size: int) -> Tensor:
 
 
 if __name__ == "__main__": 
+    torch.manual_seed(0)
     # test positional encoding:
-    pos = PositionalEncoding(d_model=512, dropout=0.1)
-    print(pos(torch.ones(32,2,512)))
+    # pos = PositionalEncoding(d_model=512, dropout=0.1)
+    # print(pos(torch.ones(32,2,512)))
 
     # test Encoder
     Encoder = Bert(
@@ -56,3 +57,4 @@ if __name__ == "__main__":
     start = time.time()
     print(Encoder(input, segments))
     print(time.time()-start)
+

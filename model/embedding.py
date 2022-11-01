@@ -8,8 +8,8 @@ class EmbeddingLayer(nn.Module):
         window_size: int,
         vocab_size: int,
         d_model: int,
-        padding_idx: int,
-        scale_grad_by_freq: bool,
+        padding_idx: int = 1,
+        scale_grad_by_freq: bool = True,
     ):
 
         super(EmbeddingLayer, self).__init__()
