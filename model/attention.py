@@ -71,7 +71,12 @@ class MultiHeadAttention(nn.Module):
              shape: batch, seq_lenght, d_model
         """
         batch_size = x.shape[0]
-        q = self.W_Q(x).view(batch_size, -1, self.nhead, self.d_k).transpose(1,2)
-        k = self.W_K(x).view(batch_size, -1, self.nhead, self.d_k).transpose(1,2)
-        v = self.W_V(x).view(batch_size, -1, self.nhead, self.d_k).transpose(1,2)
-        return self.W_O(self.Attention(q, k, v).transpose(1, 2).contiguous().reshape(batch_size, -1, self.d_model))
+        q = self.W_Q(x).view(batch_size, -1, self.nhead, self.d_k).transpose(1, 2)
+        k = self.W_K(x).view(batch_size, -1, self.nhead, self.d_k).transpose(1, 2)
+        v = self.W_V(x).view(batch_size, -1, self.nhead, self.d_k).transpose(1, 2)
+        return self.W_O(
+            self.Attention(q, k, v)
+            .transpose(1, 2)
+            .contiguous()
+            .view(batch_size, -1, self.d_model)
+        )

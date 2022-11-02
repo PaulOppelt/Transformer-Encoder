@@ -9,6 +9,7 @@ class EncoderBlock(nn.Module):
     Args:
         n_layers: number of Encoder Layers
     """
+
     def __init__(self, d_model, nhead, d_hidden, n_layers, dropout):
 
         super(EncoderBlock, self).__init__()

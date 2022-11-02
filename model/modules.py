@@ -11,6 +11,7 @@ class PositionalEncoding(nn.Module):
     Args:
         d_model: embedding dimension of the input tokens
     """
+
     def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000) -> None:
         super().__init__()
 
@@ -25,19 +26,19 @@ class PositionalEncoding(nn.Module):
         pe = pe.squeeze(1)
         self.register_buffer("pe", pe)
 
-
     def forward(self, x):
         """
 		Args:
 			x: Tensor, shape [batch_size,seq_len, d_model]
 		"""
-        return self.dropout(x + self.pe[:x.size(1), :x.size(2)])
+        return self.dropout(x + self.pe[: x.size(1), : x.size(2)])
 
 
 class PositionwiseFeedForward(nn.Module):
     r"""perform a positionwise feedforward operation on the input. Each input embedding vector is multiplied
     with the same weight matrix. 
     """
+
     def __init__(self, d_model: int, d_hidden, dropout=0.1):
         super(PositionwiseFeedForward, self).__init__()
         self.w_1 = nn.Linear(d_model, d_hidden)

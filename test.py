@@ -29,11 +29,35 @@ def segment_gen(n_segment: int, n_domains_incl: int, batch_size: int) -> Tensor:
     return segments
 
 
+class LinearClassification(nn.Module):
+    def __init__(self, d_model: int, n_domains_incl: int, window_size: int, n_labels: int) -> None:
+        super().__init__()
+
+        self.n_domains_incl = n_domains_incl
+        self.window_size = window_size
+        self.d_model = d_model
+
+        self.fc = nn.Linear(d_model, d_model * self.n_domains_incl)
+        self.activ = torch.nn.functional.gelu
+        self.drop = nn.Dropout(p=0.4)
+        self.norm = nn.LayerNorm(d_model * self.n_domains_incl)
+        self.classifier = nn.Linear(d_model * self.n_domains_incl, n_labels)
+
+    def forward(self, input: "Tensor") -> "Tensor":
+        input = input[:,:: self.n_domains_incl]
+        pooled_h = self.norm(self.activ(self.fc(input)))  # [0]
+        logits = self.classifier(pooled_h)
+        logits = torch.permute(
+            logits, (1, 2, 0)
+        )  # [seq_lenght, batch, emb_size] -> [batch, emb_size, seq_lenght]
+        return logits
+
+
 if __name__ == "__main__": 
     torch.manual_seed(0)
     # test positional encoding:
-    # pos = PositionalEncoding(d_model=512, dropout=0.1)
-    # print(pos(torch.ones(32,2,512)))
+    pos = PositionalEncoding(d_model=512, dropout=0.1)
+    print(pos(torch.ones(32,2,512)))
 
     # test Encoder
     Encoder = Bert(
@@ -49,12 +73,17 @@ if __name__ == "__main__":
         scale_grad_by_freq = True,
         copy_weight =  False)
 
+    LinearClassification = LinearClassification(512,4,8,2)
+
     print("number of parameters=",get_n_params(Encoder))
 
-    input = torch.randint(0,100,(256,32)).to(torch.long)
-    segments = segment_gen(8,4,256)
+    input = torch.randint(0,100,(32,32)).to(torch.long)
+    segments = segment_gen(8,4,32)
 
     start = time.time()
-    print(Encoder(input, segments))
+    logits, src = Encoder(input, segments)
+    out = LinearClassification(src)
     print(time.time()-start)
+
+
 

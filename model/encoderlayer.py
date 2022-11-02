@@ -16,6 +16,7 @@ class EncoderLayer(nn.Module):
         d_hidden: dimension of the positionwise feedforward layer
         dropout: probability to drop input to avoid overfitting
     """
+
     def __init__(self, d_model, nhead, d_hidden, dropout):
 
         super(EncoderLayer, self).__init__()

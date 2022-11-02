@@ -21,10 +21,11 @@ class Bert(nn.Module):
         PAD_IDX: index in vocabulary to be a padding index. gradients w.r.t the pad-index are ignored. 
         copy_weight: bool, embedding weight is the same as the output weight of the reconstruction layer. 
     """
+
     def __init__(
         self,
         vocab_size: int = 100,
-        n_domains_incl: int = 4, # not used 
+        n_domains_incl: int = 4,  # not used
         window_size: int = 32,
         d_model: int = 512,
         n_layers: int = 12,
@@ -54,7 +55,7 @@ class Bert(nn.Module):
             vocab_size=vocab_size,
             d_model=d_model,
             padding_idx=PAD_IDX,
-            scale_grad_by_freq=scale_grad_by_freq
+            scale_grad_by_freq=scale_grad_by_freq,
         )
 
         # initialize positional encoding to the input tokens.
@@ -94,5 +95,7 @@ class Bert(nn.Module):
         src = self.Positional_encoding(src)
         src = self.Block(src)
         logits_te = self.norm(self.activation(self.lc(src)))
-        logits_te = self.out(logits_te) # depending on the loss function perform permutation -> batch, vocab, seq_lenght
-        return logits_te, src 
+        logits_te = self.out(
+            logits_te
+        )  # depending on the loss function perform permutation -> batch, vocab, seq_lenght
+        return logits_te, src
