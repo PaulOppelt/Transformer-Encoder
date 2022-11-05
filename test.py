@@ -7,7 +7,9 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 import math
+from torch.autograd import Variable
 
+# count to total number of parameters in a model
 def get_n_params(model):
     r"""function tp print the number of parameters in the model
     """
@@ -19,7 +21,7 @@ def get_n_params(model):
         pp += nn
     return pp
 
-
+# create segments for the embedding layer
 def segment_gen(n_segment: int, n_domains_incl: int, batch_size: int) -> Tensor:
     segments = torch.arange(n_segment)
     segments = segments.repeat(n_domains_incl)
@@ -28,8 +30,11 @@ def segment_gen(n_segment: int, n_domains_incl: int, batch_size: int) -> Tensor:
     segments = segments.view(-1, n_segment * n_domains_incl)
     return segments
 
-
+# test classification network
 class LinearClassification(nn.Module):
+    r"""
+    description: missing. Move class to modules included with wrapper.
+    """
     def __init__(self, d_model: int, n_domains_incl: int, window_size: int, n_labels: int) -> None:
         super().__init__()
 
@@ -48,16 +53,16 @@ class LinearClassification(nn.Module):
         pooled_h = self.norm(self.activ(self.fc(input)))  # [0]
         logits = self.classifier(pooled_h)
         logits = torch.permute(
-            logits, (1, 2, 0)
+            logits, (0, 2, 1)
         )  # [seq_lenght, batch, emb_size] -> [batch, emb_size, seq_lenght]
         return logits
 
 
 if __name__ == "__main__": 
-    torch.manual_seed(0)
+    # torch.manual_seed(0)
     # test positional encoding:
-    pos = PositionalEncoding(d_model=512, dropout=0.1)
-    print(pos(torch.ones(32,2,512)))
+    # pos = PositionalEncoding(d_model=512, dropout=0.1)
+    # print(pos(torch.ones(32,2,512)))
 
     # test Encoder
     Encoder = Bert(
@@ -69,21 +74,30 @@ if __name__ == "__main__":
         n_heads = 8,
         feed_foreward = 1024,
         PAD_IDX = 1,
-        dropout = 0.4,
+        dropout = 0,
         scale_grad_by_freq = True,
         copy_weight =  False)
 
     LinearClassification = LinearClassification(512,4,8,2)
 
-    print("number of parameters=",get_n_params(Encoder))
+    input = torch.randint(5,100,(1,32)).to(torch.long)
+    segments = segment_gen(8,4,1)
 
-    input = torch.randint(0,100,(32,32)).to(torch.long)
-    segments = segment_gen(8,4,32)
-
-    start = time.time()
     logits, src = Encoder(input, segments)
     out = LinearClassification(src)
-    print(time.time()-start)
+    loss = torch.nn.functional.cross_entropy(out, torch.randint(0,2,(1,8)).to(torch.long))
+    loss.backward() 
+    print(loss)
+
+    m = nn.ReLU()
+    encoder_layers = [Encoder.Block.Encoder_Layers[i].MultiHeadAttention.Attention.attention for i in range(12)]
+    res = torch.mean(encoder_layers[0],dim=1) #* m(torch.mean(encoder_layers[0].grad,dim=1))
+    print(res.shape)
+    for i in encoder_layers[1:]:
+        #print(res)
+        print(torch.mean(i,dim=1) *m(torch.mean(i.grad,dim=1)))
+        #print(m(torch.mean(i.grad,dim=1)))
+    #print(res)
 
 
 

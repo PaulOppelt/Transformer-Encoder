@@ -1,12 +1,15 @@
 import torch
 import torch.nn as nn
 import math
+from torch.autograd import Variable
 
 
 class AttentionHead(nn.Module):
     def __init__(self, d_model: int):
 
         super(AttentionHead, self).__init__()
+
+        self.attention = None
 
     def forward(self, Q, K, V):
         r"""
@@ -22,8 +25,11 @@ class AttentionHead(nn.Module):
              
              if single Head Attention: d_k = d_model
         """
+        self.attention =  Variable(nn.Softmax(dim=-1)((Q @ K.transpose(-1, -2)) / math.sqrt(Q.shape[-1])), requires_grad=True)
+        # store attention value for rollout.
+
         return (
-            nn.Softmax(dim=-1)((Q @ K.transpose(-1, -2)) / math.sqrt(Q.shape[-1])) @ V
+            self.attention @ V
         )
 
 
