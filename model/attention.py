@@ -25,12 +25,13 @@ class AttentionHead(nn.Module):
              
              if single Head Attention: d_k = d_model
         """
-        self.attention =  Variable(nn.Softmax(dim=-1)((Q @ K.transpose(-1, -2)) / math.sqrt(Q.shape[-1])), requires_grad=True)
+        self.attention = Variable(
+            nn.Softmax(dim=-1)((Q @ K.transpose(-1, -2)) / math.sqrt(Q.shape[-1])),
+            requires_grad=True,
+        )
         # store attention value for rollout.
 
-        return (
-            self.attention @ V
-        )
+        return self.attention @ V
 
 
 class MultiHeadAttention(nn.Module):
