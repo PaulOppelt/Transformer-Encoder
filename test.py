@@ -30,6 +30,14 @@ def segment_gen(n_segment: int, n_domains_incl: int, batch_size: int) -> Tensor:
 
 
 class LinearClassification(nn.Module):
+    r"""
+    implement a linear classifier that can be used to classify the output of the bert model
+    args:
+        d_model: embedding dimension of the input tokens
+        n_domains_incl: number of domains in the input
+        window_size: size of the input window
+        n_labels: number of labels in the classification task
+    """
     def __init__(self, d_model: int, n_domains_incl: int, window_size: int, n_labels: int) -> None:
         super().__init__()
 
@@ -44,7 +52,7 @@ class LinearClassification(nn.Module):
         self.classifier = nn.Linear(d_model * self.n_domains_incl, n_labels)
 
     def forward(self, input: "Tensor") -> "Tensor":
-        input = input[:,:: self.n_domains_incl]
+        input = input[:,:: self.n_domains_incl] # take every n-th element in the second dimension (sequence length)
         pooled_h = self.norm(self.activ(self.fc(input)))  # [0]
         logits = self.classifier(pooled_h)
         logits = torch.permute(
