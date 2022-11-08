@@ -84,6 +84,8 @@ if __name__ == "__main__":
         copy_weight=False,
     )
 
+    
+
     LinearClassification = LinearClassification(512, 4, 8, 2)
 
     input = torch.randint(5, 100, (1, 32)).to(torch.long)
@@ -111,3 +113,7 @@ if __name__ == "__main__":
         print(torch.amax(i, dim=1) * m(torch.amax(i.grad, dim=1)))
         # print(m(torch.mean(i.grad,dim=1)))
     # print(res)
+
+
+
+    
