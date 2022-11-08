@@ -4,3 +4,4 @@ from .bert import Bert
 from .encoderblock import EncoderBlock
 from .encoderlayer import EncoderLayer
 from .embedding import EmbeddingLayer
+from .linear import LinearClassification
