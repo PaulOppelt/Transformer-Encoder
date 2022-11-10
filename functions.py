@@ -1,4 +1,5 @@
 import torch
+from torch import Tensor
 
 def get_n_params(model):
     r"""function tp print the number of parameters in the model

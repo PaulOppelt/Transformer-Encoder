@@ -13,9 +13,6 @@ from model import LinearClassification
 
 if __name__ == "__main__": 
     torch.manual_seed(0)
-    # test positional encoding:
-    pos = PositionalEncoding(d_model=512, dropout=0.1)
-    print(pos(torch.ones(32,2,512)))
 
     # test Encoder
     Encoder = Bert(
@@ -35,7 +32,10 @@ if __name__ == "__main__":
 
     print("number of parameters=",get_n_params(Encoder))
 
-    input = torch.randint(0,100,(32,32)).to(torch.long)
+    batch_size = 32
+
+    input = torch.randint(0,100,(batch_size, 32)).to(torch.long)
+    print(input.shape)
     segments = segment_gen(8,4,32)
 
     start = time.time()
@@ -43,6 +43,10 @@ if __name__ == "__main__":
     out = LinearClassification(src)
     print(time.time()-start)
 
+
+
+
+      
 
 
 
