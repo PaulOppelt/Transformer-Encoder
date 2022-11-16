@@ -1,9 +1,10 @@
-import torch
 import torch.nn as nn
 import math
 
 
 class AttentionHead(nn.Module):
+    r"""Implement a Multi-Head Attention Module.
+    """
     def __init__(self, d_model: int):
 
         super(AttentionHead, self).__init__()
@@ -41,7 +42,6 @@ class MultiHeadAttention(nn.Module):
         self.d_k = d_model // nhead
 
         self.Attention = AttentionHead(d_model=d_model)
-
         """
         define the query, key and value matrix which cast the input vecor to the n different
         self Attention heads
@@ -62,7 +62,7 @@ class MultiHeadAttention(nn.Module):
         MultiHeadAttention = concat(head_1, head_2, ..., head_n) @ W_0
 
         head_i = Attention(Q @ W_q_i,V @ W_v_i, K @ W_k_i), where the submatrices can be created by seperating large matrices with
-        dimensionality : d_model x d_model.
+        dimensionality : d_model x d_model. The dimensionality of the submatrices is d_model // nhead in the last dimension.
 
         Attention is performed accross the last two dimensions of the input queries, keys and values:
             nhead x d_k

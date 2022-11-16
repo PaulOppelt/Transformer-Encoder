@@ -37,8 +37,12 @@ class PositionalEncoding(nn.Module):
 class PositionwiseFeedForward(nn.Module):
     r"""perform a positionwise feedforward operation on the input. Each input embedding vector is multiplied
     with the same weight matrix. 
+    Args:
+        d_model: embedding dimension of the input tokens
+        d_hidden: hidden dimension of the feedforward layer
+    output:
+        output: Tensor, shape: batch, sequence_lenght, d_model
     """
-
     def __init__(self, d_model: int, d_hidden, dropout=0.1):
         super(PositionwiseFeedForward, self).__init__()
         self.w_1 = nn.Linear(d_model, d_hidden)
