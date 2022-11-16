@@ -84,8 +84,7 @@ if __name__ == "__main__":
         copy_weight=False,
     )
 
-    
-
+    # test classification network
     LinearClassification = LinearClassification(512, 4, 8, 2)
 
     input = torch.randint(5, 100, (1, 32)).to(torch.long)
@@ -114,6 +113,6 @@ if __name__ == "__main__":
         # print(m(torch.mean(i.grad,dim=1)))
     # print(res)
 
-
+ 
 
     
