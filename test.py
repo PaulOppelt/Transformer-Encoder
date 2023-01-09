@@ -11,6 +11,7 @@ from model import LinearClassification
 
 
 if __name__ == "__main__": 
+    # add manual seed for reproducibility
     torch.manual_seed(0)
 
     # initialize bert model
